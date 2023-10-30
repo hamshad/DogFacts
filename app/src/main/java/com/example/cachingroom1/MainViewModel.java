@@ -1,6 +1,7 @@
 package com.example.cachingroom1;
 
 import android.app.Application;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,9 +20,13 @@ import java.util.List;
 public class MainViewModel extends AndroidViewModel {
 
     List<String> factList = new ArrayList<>();
+    FactDatabase db;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
+        db = Room.databaseBuilder(application, FactDatabase.class, application.getString(R.string.app_name))
+                .allowMainThreadQueries()
+                .build();
     }
 
     public LiveData<List<String>> fetchApi() {
@@ -31,7 +36,6 @@ public class MainViewModel extends AndroidViewModel {
 
     public List<String> getCache() {
 
-        FactDatabase db = Room.databaseBuilder(getApplication(), FactDatabase.class, getApplication().getString(R.string.app_name)).allowMainThreadQueries().build();
         CachedDataDao dataDao = db.cachedDataDao();
         CachedData data = dataDao.getCachedFacts(1);
         if (data == null) {
@@ -49,5 +53,13 @@ public class MainViewModel extends AndroidViewModel {
             e.printStackTrace();
         }
         return factList;
+    }
+
+    public void deleteDB () {
+        db.cachedDataDao().clearFacts();
+    }
+
+    public void closeDB () {
+        db.close();
     }
 }

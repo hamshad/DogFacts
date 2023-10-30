@@ -1,6 +1,7 @@
 package com.example.cachingroom1;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cachingroom1.databinding.FactItemBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -20,7 +22,10 @@ public class FactAdapter extends RecyclerView.Adapter<FactAdapter.VH> {
     List<String> list;
 
     public FactAdapter(List<String> list) {
-        this.list = list;
+        if (list == null)
+            this.list = new ArrayList<>();
+        else
+            this.list = list;
     }
 
     @NonNull
